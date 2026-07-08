@@ -10,7 +10,7 @@ Once a value is determined, the device translates this numeric data into a word 
 
 ## Project Scope & Contributions
 
-This project was developed as part of a structured hierarchical design exercise. While the behavioral memory model,  
+This project was a structured hierarchical design exercise. 
 
 
 
