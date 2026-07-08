@@ -1,4 +1,6 @@
 # APB-Interfaced Dice Roller with Seven-Segment Word Encoding
+
+Status: Under active development
 ---
 ## How It Works
 
