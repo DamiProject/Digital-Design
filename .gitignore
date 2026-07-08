@@ -10,4 +10,6 @@ transcript
 *_tempmsg/
 *.bak
 *.vhd
+*.f
+*.do
 vopt/
