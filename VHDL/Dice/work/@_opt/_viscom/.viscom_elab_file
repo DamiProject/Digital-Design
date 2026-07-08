@@ -1,1 +1,0 @@
-C:/Altera/questa_fse/win64/VisualizerRls/bin/viscom.exe -nolock -quiet -jmem_size 18235824 work.dice_tb -quiet -auto_acc_if_foreign -work work -allow_unnamed -o _opt -id 1-200b746aa255-6a4d68be-c7-8100
