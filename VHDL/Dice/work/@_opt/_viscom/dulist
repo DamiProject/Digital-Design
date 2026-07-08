@@ -1,0 +1,8 @@
+1 7 apb_pkg 4 fast 42 C:/Users/damil/Desktop/FPGA/VHDL/Dice/work 0 80 0 0 16 0
+1 8 dice_pkg 4 fast 42 C:/Users/damil/Desktop/FPGA/VHDL/Dice/work 0 80 0 0 15 0
+1 11 dice_tb_pkg 4 fast 42 C:/Users/damil/Desktop/FPGA/VHDL/Dice/work 0 80 0 0 168 0
+1 11 dice_tb_pkg 4 body 42 C:/Users/damil/Desktop/FPGA/VHDL/Dice/work 0 80 0 0 168 0
+1 4 cnt6 3 rtl 42 C:/Users/damil/Desktop/FPGA/VHDL/Dice/work 1 65 0 0 40 0
+1 7 apb_mem 5 behav 42 C:/Users/damil/Desktop/FPGA/VHDL/Dice/work 1 65 0 0 288 0
+1 4 dice 3 rtl 42 C:/Users/damil/Desktop/FPGA/VHDL/Dice/work 1 65 1024 0 1066 0
+1 7 dice_tb 5 behav 42 C:/Users/damil/Desktop/FPGA/VHDL/Dice/work 1 65 1024 0 1209 0

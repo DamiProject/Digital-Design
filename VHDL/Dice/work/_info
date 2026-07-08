@@ -1,0 +1,306 @@
+m255
+K4
+z2
+!s12c _opt
+Z0 !s99 nomlopt
+!s11e vcom 2025.2 2025.05, May 31 2025
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z1 dC:/Users/damil/Desktop/FPGA/VHDL/Dice
+T_opt
+!i145 1
+!i144 0
+!s110 1783457983
+VVHmk0oe@jFT3G@9oYR[J20
+04 7 5 work dice_tb behav 1
+=1-200b746aa255-6a4d68be-c7-8100
+R0
+!s12f OEM100
+!s12b OEM100
+!s124 OEM10U5 
+!s135 nogc
+o-quiet -auto_acc_if_foreign -work work
+tCvgOpt 0 defaultOptions 1107585188
+n@_opt
+OL;O;2025.2;82
+Eapb_mem
+Z2 w1783021088
+Z3 DPx4 work 7 apb_pkg 0 22 _5K5l4<Y@WfW7O<?nd2I_3
+Z4 DPx4 work 8 dice_pkg 0 22 NSTLo`:JmBi4eY>X1EB:M2
+Z5 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
+Z6 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z7 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+!i122 0
+R1
+Z8 8Dice_Design\apb_mem.vhd
+Z9 FDice_Design\apb_mem.vhd
+l0
+L15 1
+Vc<W0_SD__zDDIDMd=9<DA1
+!s100 l=nAH7cO6k2cYkEjK?1Y<3
+Z10 OL;C;2025.2;82
+33
+Z11 !s110 1783457981
+!i10b 1
+Z12 !s108 1783457981.000000
+Z13 !s90 -reportprogress|300|-2008|-work|work|-f|Design.f|
+Z14 !s107 Dice_Design\\design.vhd|Dice_Design\\cnt6.vhd|Dice_Design\\apb_mem.vhd|Dice_Design\\dice_pkg.vhd|Dice_Design\\apb_pkg.vhd|
+!i113 0
+Z15 o-2008 -work work
+Z16 tExplicit 1 CvgOpt 0 defaultOptions 1083072464
+Abehav
+R3
+R4
+R5
+R6
+R7
+Z17 DEx4 work 7 apb_mem 0 22 c<W0_SD__zDDIDMd=9<DA1
+!i122 0
+l79
+L23 100
+V`KCdTB5P5c4;@XWM:A<zh3
+!s100 Za?nUX5MA8[`5m7RcYU4_0
+R10
+33
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 0
+R15
+R16
+Papb_pkg
+R6
+R7
+!i122 0
+w1783021086
+R1
+8Dice_Design\apb_pkg.vhd
+FDice_Design\apb_pkg.vhd
+l0
+L10 9
+V_5K5l4<Y@WfW7O<?nd2I_3
+!s100 e62KdAW:S7FQJ=<5UQfN:0
+R10
+33
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 0
+R15
+R16
+Ecnt6
+Z18 w1783021076
+R5
+R6
+R7
+!i122 0
+R1
+Z19 8Dice_Design\cnt6.vhd
+Z20 FDice_Design\cnt6.vhd
+l0
+L11 1
+VD_UkWQ3M1ilaZhg@8QE:F2
+!s100 =<iXaaR9nNObRUiiKf[D^2
+R10
+33
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 0
+R15
+R16
+Artl
+R5
+R6
+R7
+Z21 DEx4 work 4 cnt6 0 22 D_UkWQ3M1ilaZhg@8QE:F2
+!i122 0
+l23
+L19 26
+VHi=i1;K`BKg@fIe>7dZGc1
+!s100 <Y];IaEdUMGJ;b`[SMkBO2
+R10
+33
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 0
+R15
+R16
+Edice
+Z22 w1783456560
+R5
+R3
+R4
+R6
+R7
+!i122 0
+R1
+Z23 8Dice_Design\design.vhd
+Z24 FDice_Design\design.vhd
+l0
+L13 1
+V;QTH`bBdeo<PSHc;g9T3>1
+!s100 mN2m>6]CV3<8[X:?CMKXH3
+R10
+33
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 0
+R15
+R16
+Artl
+R21
+R17
+R5
+R3
+R4
+R6
+R7
+Z25 DEx4 work 4 dice 0 22 ;QTH`bBdeo<PSHc;g9T3>1
+!i122 0
+l61
+L19 202
+Vn[Mo7nMHZ=NAX:7Mh=[GY2
+!s100 KQ6zUhNM`0job5VlCcB^[2
+R10
+33
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 0
+R15
+R16
+Pdice_pkg
+R6
+R7
+!i122 0
+w1783021082
+R1
+8Dice_Design\dice_pkg.vhd
+FDice_Design\dice_pkg.vhd
+l0
+L14 13
+VNSTLo`:JmBi4eY>X1EB:M2
+!s100 3WH``z1FKUN;U4dnikj0M0
+R10
+33
+R11
+!i10b 1
+R12
+R13
+R14
+!i113 0
+R15
+R16
+Edice_tb
+Z26 w1783457488
+Z27 DPx4 ieee 9 math_real 0 22 gNk<PdFJ<XNPcfef`f?Z81
+Z28 DPx4 work 11 dice_tb_pkg 0 22 f;]^MVTd0j^7ofd?SBDYX1
+R4
+R6
+R7
+!i122 1
+R1
+Z29 8Dice_Testbench\dice_tb.vhd
+Z30 FDice_Testbench\dice_tb.vhd
+l0
+L16 1
+VF`[]3Rn>czaK2DL_SL7UX0
+!s100 ;h1]1IE>_:KbGhZg5FI7o2
+R10
+33
+R11
+!i10b 1
+R12
+Z31 !s90 -reportprogress|300|-2008|-work|work|-f|Testbench.f|
+Z32 !s107 Dice_Testbench\\dice_tb.vhd|Dice_Testbench\\dice_tb_pkg.vhd|
+!i113 0
+R15
+R16
+Abehav
+R5
+R3
+R25
+R27
+R28
+R4
+R6
+R7
+DEx4 work 7 dice_tb 0 22 F`[]3Rn>czaK2DL_SL7UX0
+!i122 1
+l40
+L19 77
+V33Pd>`kYj7@CFm=i@M]E`1
+!s100 d3lT84?kDRmJkZ9jYP^a=0
+R10
+33
+R11
+!i10b 1
+R12
+R31
+R32
+!i113 0
+R15
+R16
+Pdice_tb_pkg
+R4
+R6
+R7
+!i122 1
+Z33 w1783022973
+R1
+Z34 8Dice_Testbench\dice_tb_pkg.vhd
+Z35 FDice_Testbench\dice_tb_pkg.vhd
+l0
+L11 12
+Vf;]^MVTd0j^7ofd?SBDYX1
+!s100 odRV6C=T6=4zgUa?10QCd2
+R10
+33
+b1
+R11
+!i10b 1
+R12
+R31
+R32
+!i113 0
+R15
+R16
+Bbody
+R28
+R4
+R6
+R7
+!i122 1
+l0
+L27 44
+VfW4m[TkWnI3g[GK=oNZ0Z1
+!s100 @l0i:LIPbIM6aUL1_QlDY3
+R10
+33
+R11
+!i10b 1
+R12
+R31
+R32
+!i113 0
+R15
+R16
