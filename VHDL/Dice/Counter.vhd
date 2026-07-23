@@ -4,7 +4,7 @@ use IEEE.Numeric_Std.all;
 
 
 ------------------------------------------------------------------------------------
--- This is a general-purpose counter module. It is reused twice in the main design:
+-- This synchronous modulo-6 counter is reused twice in the complete design:
 -- 1. As a 'random_counter' to generate the random dice roll.
 -- 2. As an 'address_counter' to step through the memory locations.
 -------------------------------------------------------------------------------------
