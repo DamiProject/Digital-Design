@@ -14,9 +14,9 @@ This project was a structured hierarchical design exercise in Doulos's "Essentia
 
 My specific contributions to the design include:
 
-- **Synchronous Modulo-6 Counter(cnt6):** Designed the Register Transfer Level (RTL) for the synchronous modulo-6 counter, which is instantiated and integrated as both `random_counter` and `address_counter` in the top-level design module.
-- **Synchronizer:** Designed a dual stage flip flop synchronizer to avoid the risk of input and output metastability to the finite state machine (FSM) of the top-level design.
-- **APB Manager and Subordinate Logic:** Implemented the APB read transaction timing cycles required to retrieve word encodings from the behavioral memory model (apb_mem) and drive them to the segments port. ALso, their integration into the top-level design module.
+- **Synchronous Modulo-6 Counter(Counter):** Designed the Register Transfer Level (RTL) for the synchronous modulo-6 counter, which is instantiated and integrated as both `random_counter` and `address_counter` in the top-level design module.
+- **Synchronizer:** Designed a dual stage flip flop synchronizer to reduce the risk of top-level input metastability into the finite state machine (FSM) of the top-level design.
+- **APB Manager and Subordinate Logic:** Implemented the APB read transaction timing cycles required to retrieve word encodings from the behavioral memory model (apb_mem) and drive them to the segments port. Also, their integration into the top-level design module.
 
 **Note:** RTL designs not authored by me are excluded from this repository for copyright compliance.
 
@@ -30,7 +30,7 @@ Figure 1: Project Architecture Block Diagram (Source: Essential Digital Design T
 - Stores word encodings in 8-byte blocks of 7-segment visual display patterns.
 
 ### Synchronous Modulo-6 Counter Features
-The synchronous modulo-6 counter (`cnt6`) increments on the rising edge of `clk` and wraps back around to its initial value.
+The synchronous modulo-6 counter (`Counter`) increments on the rising edge of `clk` and wraps back around to its initial value.
 
 1. **Instance 1 (Pseudorandom Generator / `random_counter`):** 
    - Continuously cycles through values to simulate a rolling die. 
@@ -168,7 +168,7 @@ Figure 3b: 5-state Moore FSM state Diagram
 
 ```vhdl
 random_counter :
-entity work.cnt6(RTL)
+entity work.Counter(RTL)
 port map (Reset => reset,
           Clock => clk,
           Enable => random_value_enable,
@@ -178,7 +178,7 @@ port map (Reset => reset,
 **Instance 2 (address_counter):**
 ```vhdl
 address_counter :
-entity work.cnt6(RTL)
+entity work.Counter(RTL)
 port map (Reset => reset,
           Clock => clk,
           Enable => address_counter_enable,
@@ -210,9 +210,9 @@ The top-level design uses glue logic to concatenate a 2-bit vector with `random_
 The manager executes read transactions using APB timing protocol:
 
 - **1st Cycle (Setup Phase / `APB_1st_Cycle`):** `penable` is asserted **low (`'0'`)** to signal transaction initiation. Simultaneously, memory select (`psel = '1'`), read mode (`pwrite = '0'`), and address (`paddr = read_address`) are presented to the bus.
-- **2nd Cycle (Access Phase / `APB_2nd_Cycle`):** `penable` is deasserted **high (`'1'`)** while control signals (`psel`, `paddr`) remain valid. The memory subordinate drives character data onto `prdata` during this phase. `pwdata` remains inactive.
+- **2nd Cycle (Access Phase / `APB_2nd_Cycle`):** `penable` is asserted **high (`'1'`)** while control signals (`psel`, `paddr`) remain valid. The memory subordinate drives character data onto `prdata` during this phase. `pwdata` remains inactive.
 - **`PREADY` & Wait States:** Operates on a **zero wait-state** model where `pready` must remain `'1'`. An internal assertion halts simulation (`severity failure`) if `pready` goes low, ensuring fixed 2-cycle completion.
-- **Idle State:** `penable` remains deasserted high (`'1'`) and `psel` is driven low (`'0'`).
+- **Idle State:** `penable` remains high (`'1'`) and `psel` is driven low (`'0'`).
 
 ```vhdl
  APB_Control :
@@ -253,3 +253,55 @@ It generates twenty random die rolls. For each roll, it writes out a representat
 <img width="600" alt="Output_Dice" src="https://github.com/user-attachments/assets/db8a304f-303f-4c63-8558-2b0f5eb6d852" />
 
 Figure 4: Word encodings of the random die roll value.
+
+---
+## Repository Structure
+
+```
+Analog-to-Digital-Converter-ADC-/
+|-- VHDL/Dice/    # Specific contribution module 
+|-- Counter.vhd   # Synchronous modulo-6 counter module
+|-- Run.do        # Executes simulation workflow but depends on excluded course files 
+```
+
+---
+
+## Requirements
+
+Questa Altera
+
+Vendor tool support for VHDL 2008
+
+---
+
+## How to Run
+
+Clone the repository:
+
+```bash
+https://github.com/DamiProject/Digital-Design.git
+```
+**Reproducibility Note:** The complete design cannot be compiled directly from this repository because the course-provided top-level module, FSM, memory model and testbench are excluded for copyright compliance. This repository contains only the RTL authored by me, along with selected integration excerpts and simulation evidence demonstrating its operation within the complete system.
+
+## Author
+
+**Damilola Awotunde**
+
+MEng, Communications & Signal Processing - Western University | [LinkedIn](https://www.linkedin.com/in/damilola-awotunde) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
