@@ -1,11 +1,11 @@
-# APB-Interfaced Dice Roller with Seven-Segment Word Encoding
+# APB-Interfaced die Roller with Seven-Segment Word Encoding
 
 **Status:** Under active development
 
 ---
 ## How It Works
 
-This project implements a digital "dice roller" that generates a pseudorandom number (1–6) on a rising clock edge when **roll** is asserted, and displays the result as a word ("one" through "six") across seven-segment displays. 
+This project implements a digital "die roller" that generates a pseudorandom number (1–6) on a rising clock edge when **roll** is asserted, and displays the result as a word ("one" through "six") across seven-segment displays. 
 
 Once a value is determined, the device translates this numeric data into a word format displayed via a seven-segment display. Because standard seven-segment displays are limited in their character set, the design employs a "visual cheating" technique. For instance, the letter ‘w’ in "two" is approximated using two adjacent display characters, and the ‘x’ in "six" is rendered across three characters. These complex segment encodings are retrieved from a behavioural memory model via an **Advanced Peripheral Bus (APB) read transaction**. The final output is driven to the segments port, with a valid signal asserting once the data is stable.
 
@@ -15,9 +15,9 @@ This project was a structured hierarchical design exercise in Doulos's "Essentia
 
 My specific contributions to the design include:
 
-- **Synchronous Modulo-6 Counter(Counter):** Designed the Register Transfer Level (RTL) for the synchronous modulo-6 counter, which is instantiated and integrated as both `random_counter` and `address_counter` in the top-level design module.
+- **Synchronous Modulo-6 Counter(`Counter`):** Designed the Register Transfer Level (RTL) for the synchronous modulo-6 counter, which is instantiated and integrated as both `random_counter` and `address_counter` in the top-level design module.
 - **Synchronizer:** Designed a two-flop synchronizer to reduce the probability that metastability from the asynchronous `roll` input propagates into the FSM.
-- **APB Manager and Subordinate Logic:** Implemented the APB read transaction timing cycles required to retrieve word encodings from the behavioural memory model (apb_mem) and drive them to the segments port. Also, their integration into the top-level design module.
+- **APB Manager-Side Read Control and Memory Integration:** Implemented the setup, access and idle control logic for zero-wait-state APB reads and integrated it with the course provided behavioural memory subordinate and segment-output path.
 
 **Note:** RTL designs not authored by me are excluded from this repository for copyright compliance.
 
@@ -36,7 +36,7 @@ The synchronous modulo-6 counter (`Counter`) increments on the rising edge of `c
 1. **Instance 1 (Pseudorandom Generator / `random_counter`):** 
    - Continuously cycles through values to simulate a rolling die. 
    - Freezes on its current count when a roll is initiated (`random_value_enable = 0`).
-   - This frozen state becomes `random_value`, serving as the **upper 3 bits** (block base address) of the memory lookup.
+   - This frozen state becomes `random_value`, serving as the 3-bit memory block selector for the selected die value.
 
 <img width="600" alt="image" src="https://github.com/user-attachments/assets/aed4fe24-c6ae-4242-a635-9434d59f50ad" />
 
@@ -58,7 +58,7 @@ Figure 2b: `address_counter` waveform demonstrating idle holding and sequential 
 **Inputs**
 
 - **Global System Clock:** The primary timing reference for the top-level design and subcomponents.  
-- **Asynchronous Reset:** Initializes the re-settable sequential blocks, including the FSM, modulo-6 counters and behavioural memory model to their defined startup states.
+- **Asynchronous Reset:** Initializes the resettable sequential blocks, including the FSM, modulo-6 counter, and behavioural memory model, to their defined startup states.
 - **Data Input:** The asynchronous `roll` signal is synchronized to the system clock on the rising edge of `clk` before entering the FSM control logic.
   
 ```vhdl
@@ -73,7 +73,7 @@ end process;
 
 **Outputs**
 
-- **Segments:** Each element of `segments` corresponds to a single seven-segment display element and displays the generated dice roller value as an array of logic values.
+- **Segments:** Each element of `segments` corresponds to a single seven-segment display element and displays the generated die roller value as an array of logic values.
 
 - **Valid:** Asserted when display output is stable and valid.
 
@@ -188,7 +188,7 @@ port map (Reset => reset,
 
 #### 4. APB Manager-Side Read Control and Memory Integration
 
-Implemented the setup, access and idle control logic for zero-wait-state APB reads and integrated it with the course-provided behavioural memory subordinate and segment-output path.
+Implemented the setup, access and idle control logic for zero-wait-state APB reads and integrated it with the course provided behavioural memory subordinate and segment-output path.
 
 The top-level design uses glue logic to concatenate a 2-bit vector with `random_value` and `address_offset` to form the full target address (`read_address`) for memory lookups.
 
@@ -215,7 +215,7 @@ The manager executes read transactions using APB timing protocol:
 - **1st Cycle (Setup Phase / `APB_1st_Cycle`):**  `psel` is asserted while `penable` remains low, to signal transaction initiation. Simultaneously, subordinate selection (`psel = '1'`), read mode (`pwrite = '0'`), and address (`paddr = read_address`) are presented to the bus.
 - **2nd Cycle (Access Phase / `APB_2nd_Cycle`):** `penable` is asserted **high (`'1'`)** while control signals (`psel`, `paddr`) remain valid. The memory subordinate drives character data onto `prdata` during this phase. `pwdata` remains inactive.
 - **`PREADY` & Wait States:** Operates on a **zero wait-state** model where `pready` must remain `'1'`. An internal assertion halts simulation (`severity failure`) if `pready` goes low, ensuring fixed 2-cycle completion.
-- **Idle State:** During idle, `psel` is low, so no APB transction is active; this implementation leaves `penable` high until the next setup phase.
+- **Idle State:** During idle, `psel` is low, so no APB transaction is active; this implementation leaves `penable` high until the next setup phase.
 
 ```vhdl
  APB_Control :
@@ -263,10 +263,10 @@ Figure 4: Word encodings of the random die roll value.
 
 ```
 Digital-Design/
-├── .gitignore                # Ignored file extensions
+├── .gitignore                #  Simulator generated files and directories
 ├── README.md                 # Project description
 └── VHDL/
-    └── Dice/                 # Specific contribution module
+    └── die/                 # Specific contribution module
         ├── Counter.vhd       # Synchronous modulo-6 counter module
         └── Run.do            # Executes simulation workflow but depends on excluded course files                                     
 ```
@@ -288,11 +288,11 @@ Course provided source and testbench files for full system simulation
 Clone the repository:
 
 ```bash
-https://github.com/DamiProject/Digital-Design.git
-cd Digital-Design/VHDL/Dice
+git clone https://github.com/DamiProject/Digital-Design.git
+cd Digital-Design/VHDL/die
 ```
 
-**Reproducibility Note:** The complete design cannot be compiled directly from this repository because the course-provided top-level module, FSM, memory model and testbench are excluded for copyright compliance. This repository contains only the RTL authored by me, along with selected integration excerpts and simulation evidence demonstrating its operation within the complete system.
+**Reproducibility Note:** The complete design cannot be compiled directly from this repository because the course provided top-level module, FSM, memory model and testbench are excluded for copyright compliance. This repository contains only the RTL authored by me, along with selected integration excerpts and simulation evidence demonstrating its operation within the complete system.
 
 ## Author
 
