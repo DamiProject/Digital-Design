@@ -1,22 +1,23 @@
 # APB-Interfaced Dice Roller with Seven-Segment Word Encoding
 
-Status: Under active development
+**Status:** Under active development
+
 ---
 ## How It Works
 
 This project implements a digital "dice roller" that generates a pseudorandom number (1–6) on a rising clock edge when **roll** is asserted, and displays the result as a word ("one" through "six") across seven-segment displays. 
 
-Once a value is determined, the device translates this numeric data into a word format displayed via a seven-segment display. Because standard seven-segment displays are limited in their character set, the design employs a "visual cheating" technique. For instance, the letter ‘w’ in "two" is approximated using two adjacent display characters, and the ‘x’ in "six" is rendered across three characters. These complex segment encodings are retrieved from a behavioral memory model via an **Advanced Peripheral Bus (APB) read transaction**. The final output is driven to the segments port, with a valid signal asserting once the data is stable.
+Once a value is determined, the device translates this numeric data into a word format displayed via a seven-segment display. Because standard seven-segment displays are limited in their character set, the design employs a "visual cheating" technique. For instance, the letter ‘w’ in "two" is approximated using two adjacent display characters, and the ‘x’ in "six" is rendered across three characters. These complex segment encodings are retrieved from a behavioural memory model via an **Advanced Peripheral Bus (APB) read transaction**. The final output is driven to the segments port, with a valid signal asserting once the data is stable.
 
 ## Project Scope & Contributions
 
-This project was a structured hierarchical design exercise in Doulos's "Essential Digital Design Techniques" course, where the top-level of the design integrates different subcomponents as seen in Figure 1. The top-level design module, finite state machine, testbench, and behavioral memory model were provided. 
+This project was a structured hierarchical design exercise in Doulos's "Essential Digital Design Techniques" course, where the top-level of the design integrates different subcomponents as seen in Figure 1. The top-level design module, finite state machine, testbench, and behavioural memory model were provided. 
 
 My specific contributions to the design include:
 
 - **Synchronous Modulo-6 Counter(Counter):** Designed the Register Transfer Level (RTL) for the synchronous modulo-6 counter, which is instantiated and integrated as both `random_counter` and `address_counter` in the top-level design module.
-- **Synchronizer:** Designed a dual stage flip flop synchronizer to reduce the risk of top-level input metastability into the finite state machine (FSM) of the top-level design.
-- **APB Manager and Subordinate Logic:** Implemented the APB read transaction timing cycles required to retrieve word encodings from the behavioral memory model (apb_mem) and drive them to the segments port. Also, their integration into the top-level design module.
+- **Synchronizer:** Designed a two-flop synchronizer to reduce the probability that metastability from the asynchronous `roll` input propagates into the FSM.
+- **APB Manager and Subordinate Logic:** Implemented the APB read transaction timing cycles required to retrieve word encodings from the behavioural memory model (apb_mem) and drive them to the segments port. Also, their integration into the top-level design module.
 
 **Note:** RTL designs not authored by me are excluded from this repository for copyright compliance.
 
@@ -25,7 +26,7 @@ My specific contributions to the design include:
 Figure 1: Project Architecture Block Diagram (Source: Essential Digital Design Techniques, Doulos).
 
 ### Behavioural Memory Model Features
-- Functions as a 7-segment font lookup table which stores the mapped word encodings of a rolled dice value.
+- Functions as a 7-segment font lookup table which stores the mapped word encodings of a rolled die value.
 - Utilizes the APB protocol for its read transactions.
 - Stores word encodings in 8-byte blocks of 7-segment visual display patterns.
 
@@ -43,7 +44,7 @@ Figure 2a: `random_counter` waveform showing continuous incrementing and value f
 
 2. **Instance 2 (Offset Indexing / `address_counter`):**
    - Remains idle until the FSM initiates the display read sequence.
-   - Increments on clock edges (`address_counter_enable = 1`) to step through characters of the selected dice word.
+   - Increments on clock edges (`address_counter_enable = 1`) to step through characters of the selected die word.
    - This incrementing state becomes `address_offset`, serving as the **lower 3 bits** (byte offset index) of the memory lookup.
   
   <img width="1000" alt="image" src="https://github.com/user-attachments/assets/4eb9dff3-e0c9-48ef-8435-b6cc3e4ef81a" />
@@ -57,7 +58,7 @@ Figure 2b: `address_counter` waveform demonstrating idle holding and sequential 
 **Inputs**
 
 - **Global System Clock:** The primary timing reference for the top-level design and subcomponents.  
-- **Asynchronous Reset:** The system-wide initialization signal that instantly forces the top-level design and all subcomponents into a known starting state.  
+- **Asynchronous Reset:** Initializes the re-settable sequential blocks, including the FSM, modulo-6 counters and behavioural memory model to their defined startup states.
 - **Data Input:** The asynchronous `roll` signal is synchronized to the system clock on the rising edge of `clk` before entering the FSM control logic.
   
 ```vhdl
@@ -78,7 +79,7 @@ end process;
 
 #### 2. Moore Finite State Machine (FSM)
 
-The FSM follows a synchronous Moore implementation consisting of next-state combinational logic, a clocked state register, and separate output decoding logic to ensure glitch-free execution.
+The FSM uses registered state with separate next-state and output-decoding logic, keeping Moore outputs independent of direct input changes and supporting predictable synchronous behaviour.
 
 ```mermaid
 graph TB
@@ -148,11 +149,11 @@ stateDiagram-v2
     output_segments --> start_reading : Roll_Sync2 = '1'
     output_segments --> initialization : Roll_Sync2 = '0'
 ```
-Figure 3b: 5-state Moore FSM state Diagram
+Figure 3b: Five-State Moore FSM State Diagram
 
 **State Description Table**
 
- The table below details the exact behavioral purpose of each operational state and the corresponding transition requirements:
+ The table below details the exact behavioural purpose of each operational state and the corresponding transition requirements:
 
 | State Name | System Activity (What the Hardware is Doing) | Transition Condition (How it leaves this state) |
 | :--- | :--- | :--- |
@@ -185,7 +186,9 @@ port map (Reset => reset,
           Q => address_offset);
 ```
 
-#### 4. APB Manager Read Protocol and Memory Integration 
+#### 4. APB Manager-Side Read Control and Memory Integration
+
+Implemented the setup, access and idle control logic for zero-wait-state APB reads and integrated it with the course-provided behavioural memory subordinate and segment-output path.
 
 The top-level design uses glue logic to concatenate a 2-bit vector with `random_value` and `address_offset` to form the full target address (`read_address`) for memory lookups.
 
@@ -209,10 +212,10 @@ The top-level design uses glue logic to concatenate a 2-bit vector with `random_
 
 The manager executes read transactions using APB timing protocol:
 
-- **1st Cycle (Setup Phase / `APB_1st_Cycle`):** `penable` is asserted **low (`'0'`)** to signal transaction initiation. Simultaneously, memory select (`psel = '1'`), read mode (`pwrite = '0'`), and address (`paddr = read_address`) are presented to the bus.
+- **1st Cycle (Setup Phase / `APB_1st_Cycle`):**  `psel` is asserted while `penable` remains low, to signal transaction initiation. Simultaneously, subordinate selection (`psel = '1'`), read mode (`pwrite = '0'`), and address (`paddr = read_address`) are presented to the bus.
 - **2nd Cycle (Access Phase / `APB_2nd_Cycle`):** `penable` is asserted **high (`'1'`)** while control signals (`psel`, `paddr`) remain valid. The memory subordinate drives character data onto `prdata` during this phase. `pwdata` remains inactive.
 - **`PREADY` & Wait States:** Operates on a **zero wait-state** model where `pready` must remain `'1'`. An internal assertion halts simulation (`severity failure`) if `pready` goes low, ensuring fixed 2-cycle completion.
-- **Idle State:** `penable` remains high (`'1'`) and `psel` is driven low (`'0'`).
+- **Idle State:** During idle, `psel` is low, so no APB transction is active; this implementation leaves `penable` high until the next setup phase.
 
 ```vhdl
  APB_Control :
@@ -247,40 +250,48 @@ The manager executes read transactions using APB timing protocol:
 ```
 
 ### Testbench
-It generates twenty random die rolls. For each roll, it writes out a representation of the corresponding seven segment display output into the simulator log window as seen in figure 4 .
+The course provided testbench generates twenty roll transactions. I used its simulator output to verify the operation of my counter, synchronizer and APB integration within the complete system.
 
+<img width="521" height="701" alt="image" src="https://github.com/user-attachments/assets/444617ee-04d4-4328-9a76-1c5566ccf09e" />
 
-<img width="600" alt="Output_Dice" src="https://github.com/user-attachments/assets/db8a304f-303f-4c63-8558-2b0f5eb6d852" />
 
 Figure 4: Word encodings of the random die roll value.
 
 ---
+
 ## Repository Structure
 
 ```
-Analog-to-Digital-Converter-ADC-/
-|-- VHDL/Dice/    # Specific contribution module 
-|-- Counter.vhd   # Synchronous modulo-6 counter module
-|-- Run.do        # Executes simulation workflow but depends on excluded course files 
+Digital-Design/
+├── .gitignore                # Ignored file extensions
+├── README.md                 # Project description
+└── VHDL/
+    └── Dice/                 # Specific contribution module
+        ├── Counter.vhd       # Synchronous modulo-6 counter module
+        └── Run.do            # Executes simulation workflow but depends on excluded course files                                     
 ```
 
 ---
 
 ## Requirements
 
-Questa Altera
+QuestaSim/ModelSim or another compatible VHDL simulator
 
-Vendor tool support for VHDL 2008
+VHDL-2008 support
+
+Course provided source and testbench files for full system simulation
 
 ---
 
-## How to Run
+## Local Simulation Workflow
 
 Clone the repository:
 
 ```bash
 https://github.com/DamiProject/Digital-Design.git
+cd Digital-Design/VHDL/Dice
 ```
+
 **Reproducibility Note:** The complete design cannot be compiled directly from this repository because the course-provided top-level module, FSM, memory model and testbench are excluded for copyright compliance. This repository contains only the RTL authored by me, along with selected integration excerpts and simulation evidence demonstrating its operation within the complete system.
 
 ## Author
@@ -288,20 +299,3 @@ https://github.com/DamiProject/Digital-Design.git
 **Damilola Awotunde**
 
 MEng, Communications & Signal Processing - Western University | [LinkedIn](https://www.linkedin.com/in/damilola-awotunde) 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
